@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ToDo App</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f8;
+            display: flex;
+            justify-content: center;
+            margin-top: 50px;
+        }
+
+        .container {
+            background: white;
+            padding: 20px 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            width: 400px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        input {
+            flex: 1;
+            padding: 8px;
+            font-size: 16px;
+        }
+
+        button {
+            padding: 8px 12px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+        }
+
+        .add-btn {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .delete-btn {
+            background-color: #dc3545;
+            color: white;
+            margin-left: 10px;
+        }
+
+        li {
+            margin-top: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+    </style>
+
+</head>
+<body>
+
+<div class="container">
+
+<h1>My ToDo App</h1>
+
+<div class="input-group">
+<input type="text" id="taskInput" placeholder="Enter new task">
+<button class="add-btn" onclick="addTask()">Add</button>
+</div>
+
+<h3>Tasks</h3>
+<ul id="taskList"></ul>
+
+</div>
+
+<script>
+
+async function loadTasks() {
+    const response = await fetch("/tasks");
+    const tasks = await response.json();
+
+    const list = document.getElementById("taskList");
+    list.innerHTML = "";
+
+    tasks.forEach(task => {
+
+        const li = document.createElement("li");
+
+        const text = document.createElement("span");
+        text.textContent = task.task;
+
+        const button = document.createElement("button");
+        button.textContent = "Delete";
+        button.className = "delete-btn";
+        button.onclick = () => deleteTask(task.id);
+
+        li.appendChild(text);
+        li.appendChild(button);
+
+        list.appendChild(li);
+    });
+}
+
+async function addTask() {
+
+    const input = document.getElementById("taskInput");
+    const task = input.value;
+
+    if(task.trim() === "") return;
+
+    await fetch("/tasks", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ task })
+    });
+
+    input.value = "";
+
+    loadTasks();
+}
+
+async function deleteTask(id) {
+
+    await fetch(`/tasks/${id}`, {
+        method: "DELETE"
+    });
+
+    loadTasks();
+}
+
+loadTasks();
+
+</script>
+
+</body>
+</html>
