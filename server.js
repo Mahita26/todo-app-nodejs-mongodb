@@ -1,29 +1,40 @@
 const express = require("express");
+const db = require("./database");
 
 const app = express();
-
 const PORT = 3000;
 
-// Middleware to read JSON
 app.use(express.json());
 
 // Home route
 app.get("/", (req, res) => {
-    res.send("My Express server is running!");
+    res.send("My Express + SQLite server is running!");
 });
 
-// Tasks route (NEW API)
+// GET all tasks from database
 app.get("/tasks", (req, res) => {
-    const tasks = [
-        { id: 1, task: "Learn Node.js" },
-        { id: 2, task: "Build ToDo App" },
-        { id: 3, task: "Push code to GitHub" }
-    ];
-
-    res.json(tasks);
+    db.all("SELECT * FROM tasks", [], (err, rows) => {
+        if (err) {
+            res.status(500).json({ error: err.message });
+        } else {
+            res.json(rows);
+        }
+    });
 });
 
-// Start server
+// POST new task to database
+app.post("/tasks", (req, res) => {
+    const { task } = req.body;
+
+    db.run("INSERT INTO tasks (task) VALUES (?)", [task], function (err) {
+        if (err) {
+            res.status(500).json({ error: err.message });
+        } else {
+            res.json({ id: this.lastID, task });
+        }
+    });
+});
+
 app.listen(PORT, () => {
     console.log(`Server running at http://localhost:${PORT}`);
 });
