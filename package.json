@@ -1,0 +1,25 @@
+{
+  "name": "todo-app-nodejs-mongodb",
+  "version": "1.0.0",
+  "description": "Full stack ToDo application using Node.js, Express, and SQLite.",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mahita26/todo-app-nodejs-mongodb.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Mahita26/todo-app-nodejs-mongodb/issues"
+  },
+  "homepage": "https://github.com/Mahita26/todo-app-nodejs-mongodb#readme",
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}
